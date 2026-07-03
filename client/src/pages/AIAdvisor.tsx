@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BASE_URL } from '../utils/api';
 import { Card, Button, Typography, Alert, Spin, Row, Col, Divider } from 'antd';
 import {
   SearchOutlined, SafetyCertificateOutlined, CompassOutlined, RobotOutlined,
@@ -180,7 +181,7 @@ const AIAdvisor = () => {
     setActiveType(type);
     try {
       const token = localStorage.getItem('token');
-      const res   = await fetch('http://localhost:8000/api/ai/advice', {
+      const res   = await fetch(`${BASE_URL}/ai/advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ type }),

@@ -15,7 +15,8 @@ interface Activity {
   description: string;
 }
 
-const API = 'http://localhost:8000/api/activities';
+import { BASE_URL } from '../utils/api';
+const API = `${BASE_URL}/activities`;
 const token = () => localStorage.getItem('token');
 
 const typeColors: Record<string, string> = {

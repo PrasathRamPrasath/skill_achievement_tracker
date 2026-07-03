@@ -22,7 +22,8 @@ interface Project {
   status: 'ongoing' | 'completed' | 'paused';
 }
 
-const API = 'http://localhost:8000/api/projects';
+import { BASE_URL } from '../utils/api';
+const API = `${BASE_URL}/projects`;
 const token = () => localStorage.getItem('token');
 
 const statusColors: Record<string, string> = {

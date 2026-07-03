@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Form, Input, Button, Typography, Alert, Card } from 'antd';
 import { LockOutlined, MailOutlined, SafetyOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { BASE_URL } from '../utils/api';
 
 const { Title, Text } = Typography;
 
@@ -15,7 +16,7 @@ const AdminSetup = () => {
     setError('');
     setSuccess('');
     try {
-      const res  = await fetch('http://localhost:8000/api/users/make-admin', {
+      const res  = await fetch(`${BASE_URL}/users/make-admin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),

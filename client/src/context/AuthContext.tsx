@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { BASE_URL } from '../utils/api';
 
 interface User {
   _id: string;
@@ -57,7 +58,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(JSON.parse(storedUser)); // render immediately with cached data
 
       // Refresh from server so stale localStorage (e.g. missing role) is corrected
-      fetch('http://localhost:8000/api/users/profile', {
+      fetch(`${BASE_URL}/users/profile`, {
+        
         headers: { Authorization: `Bearer ${storedToken}` },
       })
         .then((r) => (r.ok ? r.json() : null))
@@ -76,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:8000/api/users/login', {
+      const response = await fetch(`${BASE_URL}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -99,7 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = async (userData: RegisterData) => {
     try {
-      const response = await fetch('http://localhost:8000/api/users/register', {
+      const response = await fetch(`${BASE_URL}/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),

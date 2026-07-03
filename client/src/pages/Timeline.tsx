@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Tag, Typography, Spin, Empty, Select, Button } from 'antd';
+import { Tag, Typography, Spin, Empty, Button } from 'antd';
 import {
   SafetyCertificateOutlined, TrophyOutlined, TeamOutlined,
   CalendarOutlined, CodeOutlined, GithubOutlined, LinkOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { BASE_URL } from '../utils/api';
 
 const { Title, Text } = Typography;
 
@@ -38,7 +39,7 @@ const Timeline = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:8000/api/timeline', {
+    fetch(`${BASE_URL}/timeline`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())

@@ -16,7 +16,8 @@ interface Internship {
   skills: string[];
 }
 
-const API = 'http://localhost:8000/api/internships';
+import { BASE_URL } from '../utils/api';
+const API = `${BASE_URL}/internships`;
 const token = () => localStorage.getItem('token');
 
 const Internships = () => {

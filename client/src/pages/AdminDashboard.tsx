@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
-  Card, Col, Row, Table, Tag, Typography, Spin, Empty,
-  Input, Select, Modal, List, Button, Divider, Avatar,
+  Card, Col, Row, Table, Typography, Spin, Empty,
+  Input, Select, Modal, Button, Avatar,
 } from 'antd';
 import {
   TeamOutlined, TrophyOutlined, SafetyCertificateOutlined,
-  CodeOutlined, SearchOutlined, UserOutlined, AimOutlined,
+  CodeOutlined, SearchOutlined, AimOutlined,
   GithubOutlined, LinkedinOutlined, ProjectOutlined, CalendarOutlined,
   PhoneOutlined, MailOutlined,
 } from '@ant-design/icons';
@@ -13,6 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from 'recharts';
+import { BASE_URL } from '../utils/api';
 
 const { Title, Text } = Typography;
 
@@ -52,8 +53,8 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:8000/api/admin/stats',    { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
-      fetch('http://localhost:8000/api/admin/students', { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
+      fetch(`${BASE_URL}/admin/stats`,    { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
+      fetch(`${BASE_URL}/admin/students`, { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
     ]).then(([s, stu]) => {
       setStats(s);
       setStudents(Array.isArray(stu) ? stu : []);
@@ -77,7 +78,7 @@ const AdminDashboard = () => {
   const openDetail = async (id: string) => {
     setDetailLoading(true); setModalOpen(true);
     try {
-      const res  = await fetch(`http://localhost:8000/api/admin/students/${id}`, { headers: { Authorization: `Bearer ${token()}` } });
+      const res  = await fetch(`${BASE_URL}/admin/students/${id}`, { headers: { Authorization: `Bearer ${token()}` } });
       const data = await res.json();
       setDetail(data);
     } catch { /* silent */ }

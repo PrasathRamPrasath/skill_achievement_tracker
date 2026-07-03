@@ -15,7 +15,8 @@ interface Achievement {
   level: string;
 }
 
-const API = 'http://localhost:8000/api/achievements';
+import { BASE_URL } from '../utils/api';
+const API = `${BASE_URL}/achievements`;
 const token = () => localStorage.getItem('token');
 
 const levelColors: Record<string, string> = {

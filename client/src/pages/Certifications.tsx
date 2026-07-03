@@ -22,7 +22,8 @@ interface Certification {
   skills: string[];
 }
 
-const API = 'http://localhost:8000/api/certifications';
+import { BASE_URL } from '../utils/api';
+const API = `${BASE_URL}/certifications`;
 const token = () => localStorage.getItem('token');
 
 /** Convert Google Drive share links → embeddable preview URL */

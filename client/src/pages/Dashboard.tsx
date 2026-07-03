@@ -10,6 +10,7 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { useAuth } from '../context/AuthContext';
+import { BASE_URL } from '../utils/api';
 
 const { Title, Text } = Typography;
 
@@ -67,7 +68,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:8000/api/dashboard', {
+    fetch(`${BASE_URL}/dashboard`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())

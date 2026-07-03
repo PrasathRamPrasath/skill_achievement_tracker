@@ -10,6 +10,7 @@ import {
   SolutionOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
+import { BASE_URL } from '../utils/api';
 
 const { Title, Text } = Typography;
 
@@ -80,7 +81,7 @@ const Profile = () => {
       const skillsArray = values.skills
         ? values.skills.split(',').map((s: string) => s.trim()).filter(Boolean)
         : [];
-      const res = await fetch('http://localhost:8000/api/users/profile', {
+      const res = await fetch(`${BASE_URL}/users/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tkn}` },
         body: JSON.stringify({

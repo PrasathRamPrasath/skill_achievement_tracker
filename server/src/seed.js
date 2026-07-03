@@ -13,8 +13,13 @@ import Achievement   from './models/Achievement.js';
 import Internship    from './models/Internship.js';
 import Activity      from './models/Activity.js';
 import Project       from './models/Project.js';
+import envConfig     from './config/envConfig.js';
 
-const MONGO_URI = 'mongodb+srv://kmhronestopsolution_db_user:6QXipxwRglK5FXlD@cluster0.yq7ta0g.mongodb.net/Skill_achievement_tracker';
+const MONGO_URI = envConfig.mongodbUri;
+if (!MONGO_URI) {
+  console.error('❌ MONGODB_URI not set in .env');
+  process.exit(1);
+}
 
 // ── Student profiles ──────────────────────────────────────────────────────────
 const students = [
