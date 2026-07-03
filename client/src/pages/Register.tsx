@@ -4,17 +4,22 @@ import { Form, Input, Button, Select, Alert, Row, Col } from 'antd';
 import {
   UserOutlined, MailOutlined, LockOutlined,
   IdcardOutlined, BankOutlined, PhoneOutlined,
-  LinkedinOutlined, GithubOutlined,
+  LinkedinOutlined, GithubOutlined, SafetyOutlined, SolutionOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
 import '../styles/auth.css';
 
+type Mode = 'student' | 'admin';
+
 const Register = () => {
+  const [mode, setMode]       = useState<Mode>('student');
   const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
   const { register }          = useAuth();
   const navigate              = useNavigate();
   const [form]                = Form.useForm();
+
+  const switchMode = (m: Mode) => { setMode(m); setError(''); form.resetFields(); };
 
   const handleSubmit = async (values: any) => {
     setError('');
@@ -24,7 +29,7 @@ const Register = () => {
         ...values,
         year: values.year ? parseInt(values.year) : undefined,
       });
-      navigate('/dashboard');
+      navigate(mode === 'admin' ? '/admin' : '/dashboard');
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -47,35 +52,70 @@ const Register = () => {
         <div className="auth-left-content">
           <div className="auth-badge">✦ JOIN THE COMMUNITY</div>
           <h1 className="auth-heading">
-            Start your journey with{' '}
-            <span className="auth-gradient-text">Skills & Achievement</span>{' '}
-            Tracker
+            {mode === 'admin'
+              ? <>Set up your <span className="auth-gradient-text">Institution Admin</span> account</>
+              : <>Start your journey with <span className="auth-gradient-text">Skills & Achievement</span> Tracker</>
+            }
           </h1>
           <p className="auth-subtext">
-            Create your student profile and begin tracking your growth.
-            Get AI-powered insights on skill gaps and learning paths.
+            {mode === 'admin'
+              ? 'Create your admin account to manage student profiles, track department-level talent, and support placement preparation.'
+              : 'Create your student profile and begin tracking your growth. Get AI-powered insights on skill gaps and learning paths.'
+            }
           </p>
           <div className="auth-pills">
-            <span className="auth-pill">🔍 AI Advisor</span>
-            <span className="auth-pill">📜 Certifications</span>
-            <span className="auth-pill">🏆 Achievements</span>
-            <span className="auth-pill">💼 Internships</span>
+            {mode === 'admin' ? (
+              <>
+                <span className="auth-pill">📊 Analytics</span>
+                <span className="auth-pill">👥 All Students</span>
+                <span className="auth-pill">🏆 Top Talent</span>
+                <span className="auth-pill">🎓 Placement Ready</span>
+              </>
+            ) : (
+              <>
+                <span className="auth-pill">🔍 AI Advisor</span>
+                <span className="auth-pill">📜 Certifications</span>
+                <span className="auth-pill">🏆 Achievements</span>
+                <span className="auth-pill">💼 Internships</span>
+              </>
+            )}
           </div>
           <div className="auth-info-cards">
-            <div className="auth-info-card">
-              <div className="auth-info-icon">🎓</div>
-              <div>
-                <div className="auth-info-title">Student profiles</div>
-                <div className="auth-info-desc">Register with your roll number and department info.</div>
-              </div>
-            </div>
-            <div className="auth-info-card">
-              <div className="auth-info-icon">🤖</div>
-              <div>
-                <div className="auth-info-title">AI-powered advice</div>
-                <div className="auth-info-desc">Get personalised skill and certification recommendations.</div>
-              </div>
-            </div>
+            {mode === 'admin' ? (
+              <>
+                <div className="auth-info-card">
+                  <div className="auth-info-icon">🏫</div>
+                  <div>
+                    <div className="auth-info-title">Institution view</div>
+                    <div className="auth-info-desc">See all students, departments, and engagement stats.</div>
+                  </div>
+                </div>
+                <div className="auth-info-card">
+                  <div className="auth-info-icon">🔐</div>
+                  <div>
+                    <div className="auth-info-title">Secret key required</div>
+                    <div className="auth-info-desc">Admin accounts need the institution secret key to register.</div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="auth-info-card">
+                  <div className="auth-info-icon">🎓</div>
+                  <div>
+                    <div className="auth-info-title">Student profiles</div>
+                    <div className="auth-info-desc">Register with your roll number and department info.</div>
+                  </div>
+                </div>
+                <div className="auth-info-card">
+                  <div className="auth-info-icon">🤖</div>
+                  <div>
+                    <div className="auth-info-title">AI-powered advice</div>
+                    <div className="auth-info-desc">Get personalised skill and certification recommendations.</div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -85,26 +125,46 @@ const Register = () => {
         <div className="auth-card">
 
           <div className="auth-logo-row">
-            <div className="auth-logo-icon">ST</div>
+            <div className="auth-logo-icon" style={mode === 'admin' ? { background: 'linear-gradient(135deg, #4ade80, #16a34a)' } : {}}>
+              {mode === 'admin' ? '🏫' : 'ST'}
+            </div>
             <div>
               <div className="auth-logo-label">SKILLS TRACKER ✦</div>
-              <h2 className="auth-welcome">Create account</h2>
+              <h2 className="auth-welcome">{mode === 'admin' ? 'Admin Register' : 'Create account'}</h2>
             </div>
           </div>
 
-          <div className="auth-info-box">
-            Fill in your student details below to create your profile.
+          {/* Mode toggle */}
+          <div style={{
+            display: 'flex', background: '#f3f4f6', borderRadius: 10,
+            padding: 4, marginBottom: 20, gap: 4,
+          }}>
+            {(['student', 'admin'] as Mode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => switchMode(m)}
+                style={{
+                  flex: 1, padding: '8px 0', border: 'none', borderRadius: 8, cursor: 'pointer',
+                  fontWeight: 700, fontSize: 13, transition: 'all 0.2s',
+                  background: mode === m ? (m === 'admin' ? '#16a34a' : '#4f46e5') : 'transparent',
+                  color: mode === m ? '#fff' : '#6b7280',
+                  boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
+                }}
+              >
+                {m === 'student' ? '🎓 Student' : '🏫 Admin'}
+              </button>
+            ))}
+          </div>
+
+          <div className="auth-info-box" style={mode === 'admin' ? { background: '#f0fdf4', borderColor: '#bbf7d0', color: '#14532d' } : {}}>
+            {mode === 'admin'
+              ? 'Admin accounts require the institution secret key. Contact your system administrator if you don\'t have it.'
+              : 'Fill in your student details below to create your profile.'}
           </div>
 
           {error && (
-            <Alert
-              message={error}
-              type="error"
-              showIcon
-              closable
-              onClose={() => setError('')}
-              style={{ marginBottom: 16, borderRadius: 8 }}
-            />
+            <Alert message={error} type="error" showIcon closable onClose={() => setError('')}
+              style={{ marginBottom: 16, borderRadius: 8 }} />
           )}
 
           <Form form={form} layout="vertical" onFinish={handleSubmit} size="middle">
@@ -123,45 +183,63 @@ const Register = () => {
               <Input.Password prefix={<LockOutlined style={{ color: '#9ca3af' }} />} placeholder="Password (min 6 chars)" />
             </Form.Item>
 
-            <div className="auth-section-title">Student Details</div>
+            {mode === 'student' && (
+              <>
+                <div className="auth-section-title">Student Details</div>
+                <Row gutter={12}>
+                  <Col span={12}>
+                    <Form.Item name="rollNumber" rules={[{ required: true, message: 'Required' }]}>
+                      <Input prefix={<IdcardOutlined style={{ color: '#9ca3af' }} />} placeholder="Roll Number" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="department" rules={[{ required: true, message: 'Required' }]}>
+                      <Input prefix={<BankOutlined style={{ color: '#9ca3af' }} />} placeholder="Department" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="year" rules={[{ required: true, message: 'Required' }]}>
+                      <Select placeholder="Year" options={[
+                        { value: '1', label: 'Year 1' },
+                        { value: '2', label: 'Year 2' },
+                        { value: '3', label: 'Year 3' },
+                        { value: '4', label: 'Year 4' },
+                      ]} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="phone">
+                      <Input prefix={<PhoneOutlined style={{ color: '#9ca3af' }} />} placeholder="Phone (optional)" />
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-            <Row gutter={12}>
-              <Col span={12}>
-                <Form.Item name="rollNumber" rules={[{ required: true, message: 'Required' }]}>
-                  <Input prefix={<IdcardOutlined style={{ color: '#9ca3af' }} />} placeholder="Roll Number" />
+                <div className="auth-section-title">Social Links (Optional)</div>
+                <Form.Item name="linkedin">
+                  <Input prefix={<LinkedinOutlined style={{ color: '#0077b5' }} />} placeholder="LinkedIn URL" />
                 </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="department" rules={[{ required: true, message: 'Required' }]}>
-                  <Input prefix={<BankOutlined style={{ color: '#9ca3af' }} />} placeholder="Department" />
+                <Form.Item name="github">
+                  <Input prefix={<GithubOutlined style={{ color: '#1f2937' }} />} placeholder="GitHub URL" />
                 </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="year" rules={[{ required: true, message: 'Required' }]}>
-                  <Select placeholder="Year" options={[
-                    { value: '1', label: 'Year 1' },
-                    { value: '2', label: 'Year 2' },
-                    { value: '3', label: 'Year 3' },
-                    { value: '4', label: 'Year 4' },
-                  ]} />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="phone">
-                  <Input prefix={<PhoneOutlined style={{ color: '#9ca3af' }} />} placeholder="Phone (optional)" />
-                </Form.Item>
-              </Col>
-            </Row>
+              </>
+            )}
 
-            <div className="auth-section-title">Social Links (Optional)</div>
+            {mode === 'admin' && (
+              <>
+                <div className="auth-section-title">Admin Details</div>
+                <Form.Item name="designation" rules={[{ required: true, message: 'Designation is required' }]}>
+                  <Input prefix={<SolutionOutlined style={{ color: '#9ca3af' }} />} placeholder="e.g. HOD, Lecturer, Lab Admin" />
+                </Form.Item>
 
-            <Form.Item name="linkedin">
-              <Input prefix={<LinkedinOutlined style={{ color: '#0077b5' }} />} placeholder="LinkedIn URL" />
-            </Form.Item>
-
-            <Form.Item name="github">
-              <Input prefix={<GithubOutlined style={{ color: '#1f2937' }} />} placeholder="GitHub URL" />
-            </Form.Item>
+                <div className="auth-section-title">Institution Secret Key</div>
+                <Form.Item name="adminSecret" rules={[{ required: true, message: 'Secret key is required' }]}>
+                  <Input.Password
+                    prefix={<SafetyOutlined style={{ color: '#16a34a' }} />}
+                    placeholder="Admin secret key"
+                  />
+                </Form.Item>
+              </>
+            )}
 
             <Form.Item style={{ marginBottom: 12 }}>
               <Button
@@ -169,9 +247,13 @@ const Register = () => {
                 htmlType="submit"
                 block
                 loading={loading}
-                style={{ height: 44, borderRadius: 8, fontWeight: 600, fontSize: 15 }}
+                style={{
+                  height: 44, borderRadius: 8, fontWeight: 600, fontSize: 15,
+                  background: mode === 'admin' ? '#16a34a' : undefined,
+                  borderColor: mode === 'admin' ? '#16a34a' : undefined,
+                }}
               >
-                Create Account
+                {mode === 'admin' ? 'Create Admin Account' : 'Create Student Account'}
               </Button>
             </Form.Item>
           </Form>

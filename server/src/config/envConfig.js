@@ -11,6 +11,7 @@ const envConfig = {
   ollamaBaseUrl: process.env.OLLAMA_BASE_URL,
   ollamaModel: process.env.OLLAMA_MODEL,
   ollamaApiKey: process.env.OLLAMA_API_KEY,
+  adminSecret: process.env.ADMIN_SECRET,
 };
 
 export default envConfig;

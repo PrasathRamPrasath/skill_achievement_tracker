@@ -23,18 +23,16 @@ const userSchema = new mongoose.Schema({
   // Student-specific fields
   rollNumber: {
     type: String,
-    required: [true, 'Please provide a roll number'],
     unique: true,
+    sparse: true,
     trim: true,
   },
   department: {
     type: String,
-    required: [true, 'Please provide a department'],
     trim: true,
   },
   year: {
     type: Number,
-    required: [true, 'Please provide your year'],
     min: 1,
     max: 4,
   },
@@ -54,6 +52,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
   }],
+  careerGoal: {
+    type: String,
+    trim: true,
+  },
+  role: {
+    type: String,
+    enum: ['student', 'admin'],
+    default: 'student',
+  },
+  designation: {
+    type: String,
+    trim: true,
+  },
   resumeUrl: {
     type: String,
     trim: true,

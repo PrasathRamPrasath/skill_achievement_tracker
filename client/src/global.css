@@ -648,3 +648,18 @@ textarea::placeholder {
     line-height: 1.25rem;
   }
 }
+
+/* Admin navbar link */
+.navbar-link-admin {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+.navbar-link-admin:hover,
+.navbar-link-admin.navbar-link-active {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+}

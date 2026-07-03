@@ -16,8 +16,8 @@ const Login = () => {
     setError('');
     setLoading(true);
     try {
-      await login(values.email, values.password);
-      navigate('/dashboard');
+      const user = await login(values.email, values.password);
+      navigate(user.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {

@@ -10,7 +10,11 @@ import Certifications from './pages/Certifications';
 import Achievements from './pages/Achievements';
 import Internships from './pages/Internships';
 import Activities from './pages/Activities';
+import Projects from './pages/Projects';
+import Timeline from './pages/Timeline';
 import AIAdvisor from './pages/AIAdvisor';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminSetup from './pages/AdminSetup';
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => (
   <ProtectedRoute>
@@ -23,8 +27,9 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/login"    element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login"        element={<Login />} />
+          <Route path="/register"     element={<Register />} />
+          <Route path="/admin-setup"  element={<AdminSetup />} />
           <Route path="/"         element={<Navigate to="/dashboard" replace />} />
 
           <Route path="/dashboard"      element={<ProtectedPage><Dashboard /></ProtectedPage>} />
@@ -33,7 +38,10 @@ function App() {
           <Route path="/achievements"   element={<ProtectedPage><Achievements /></ProtectedPage>} />
           <Route path="/internships"    element={<ProtectedPage><Internships /></ProtectedPage>} />
           <Route path="/activities"     element={<ProtectedPage><Activities /></ProtectedPage>} />
+          <Route path="/projects"       element={<ProtectedPage><Projects /></ProtectedPage>} />
+          <Route path="/timeline"       element={<ProtectedPage><Timeline /></ProtectedPage>} />
           <Route path="/ai-advisor"     element={<ProtectedPage><AIAdvisor /></ProtectedPage>} />
+          <Route path="/admin"          element={<ProtectedPage><AdminDashboard /></ProtectedPage>} />
         </Routes>
       </Router>
     </AuthProvider>

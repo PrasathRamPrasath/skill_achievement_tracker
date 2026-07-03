@@ -12,14 +12,17 @@ interface User {
   linkedin?: string;
   github?: string;
   skills?: string[];
+  careerGoal?: string;
+  role?: string;
+  designation?: string;
   resumeUrl?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (userData: RegisterData) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
+  register: (userData: RegisterData) => Promise<User>;
   logout: () => void;
   loading: boolean;
 }
@@ -34,6 +37,8 @@ interface RegisterData {
   phone?: string;
   linkedin?: string;
   github?: string;
+  adminSecret?: string;
+  designation?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,13 +50,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    
+    const storedUser  = localStorage.getItem('user');
+
     if (storedToken && storedUser) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      setUser(JSON.parse(storedUser)); // render immediately with cached data
+
+      // Refresh from server so stale localStorage (e.g. missing role) is corrected
+      fetch('http://localhost:8000/api/users/profile', {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((fresh) => {
+          if (fresh) {
+            setUser(fresh);
+            localStorage.setItem('user', JSON.stringify(fresh));
+          }
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -68,6 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('user', JSON.stringify(data));
         setToken(data.token);
         setUser(data);
+        return data;
       } else {
         throw new Error(data.message || 'Login failed');
       }
@@ -90,6 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('user', JSON.stringify(data));
         setToken(data.token);
         setUser(data);
+        return data;
       } else {
         throw new Error(data.message || 'Registration failed');
       }
