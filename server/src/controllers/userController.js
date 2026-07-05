@@ -15,6 +15,7 @@ const generateToken = (id) => {
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, rollNumber, department, year, phone, linkedin, github, adminSecret, designation } = req.body;
+    console.log('Registering user with data:', req.body);
 
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
