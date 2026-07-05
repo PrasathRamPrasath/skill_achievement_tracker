@@ -48,18 +48,28 @@ const AdminDashboard = () => {
   const [detail, setDetail]               = useState<StudentDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [modalOpen, setModalOpen]         = useState(false);
+  const [error, setError]                 = useState('');
 
   const token = () => localStorage.getItem('token');
 
   useEffect(() => {
+    const authHeaders = { headers: { Authorization: `Bearer ${token()}` } };
     Promise.all([
-      fetch(`${BASE_URL}/admin/stats`,    { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
-      fetch(`${BASE_URL}/admin/students`, { headers: { Authorization: `Bearer ${token()}` } }).then(r => r.json()),
+      fetch(`${BASE_URL}/admin/stats`,    authHeaders).then(async r => {
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.message || 'Failed to load stats');
+        return data;
+      }),
+      fetch(`${BASE_URL}/admin/students`, authHeaders).then(async r => {
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.message || 'Failed to load students');
+        return data;
+      }),
     ]).then(([s, stu]) => {
       setStats(s);
       setStudents(Array.isArray(stu) ? stu : []);
       setFiltered(Array.isArray(stu) ? stu : []);
-    }).catch(console.error)
+    }).catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -178,6 +188,14 @@ const AdminDashboard = () => {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
         <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={error} />
       </div>
     );
   }
